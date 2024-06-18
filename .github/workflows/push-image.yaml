@@ -5,9 +5,9 @@ on:
     branches: [6.2.14]
 
 env:
-  REDIS_VERSION: latest
-  REDIS_SENTINEL_VERSION: latest
-  REDIS_EXPORTER_VERSION: latest
+  REDIS_VERSION: 6.2.14
+  REDIS_SENTINEL_VERSION: 6.2.14
+  REDIS_EXPORTER_VERSION: 6.2.14
 
 jobs:
   build_redis:
