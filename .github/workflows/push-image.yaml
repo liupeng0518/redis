@@ -2,7 +2,7 @@ name: Docker
 
 on:
   push:
-    branches: [6.2.4]
+    branches: [6.2.14]
 
 env:
   REDIS_VERSION: latest
