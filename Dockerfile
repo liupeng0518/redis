@@ -5,8 +5,8 @@ LABEL maintainer="Opstree Solutions"
 ARG TARGETARCH
 
 LABEL version=1.0 \
-      arch=$TARGETARCH \
-      description="A production grade performance tuned redis docker image created by Opstree Solutions"
+    arch=$TARGETARCH \
+    description="A production grade performance tuned redis docker image created by Opstree Solutions"
 
 ARG REDIS_DOWNLOAD_URL="http://download.redis.io/"
 
@@ -21,8 +21,14 @@ RUN curl -L https://github.com/redis/redis/archive/refs/tags/6.2.14.tar.gz -o re
 
 WORKDIR /tmp/redis-${REDIS_VERSION}
 
-RUN make && \
-    make install BUILD_TLS=yes
+RUN arch="$(uname -m)"; \
+    extraJemallocConfigureFlags="--with-lg-page=16"; \
+    if [ "$arch" = "aarch64" ] || [ "$arch" = "arm64" ]; then \
+    sed -ri 's!cd jemalloc && ./configure !&'"$extraJemallocConfigureFlags"' !' /tmp/redis-${REDIS_VERSION}/deps/Makefile; \
+    fi; \
+    export BUILD_TLS=yes; \
+    make all; \
+    make install
 
 FROM alpine:3.15
 
@@ -33,8 +39,8 @@ ARG TARGETARCH
 ENV REDIS_PORT=6379
 
 LABEL version=1.0 \
-      arch=$TARGETARCH \
-      description="A production grade performance tuned redis docker image created by Opstree Solutions"
+    arch=$TARGETARCH \
+    description="A production grade performance tuned redis docker image created by Opstree Solutions"
 
 COPY --from=builder /usr/local/bin/redis-server /usr/local/bin/redis-server
 COPY --from=builder /usr/local/bin/redis-cli /usr/local/bin/redis-cli

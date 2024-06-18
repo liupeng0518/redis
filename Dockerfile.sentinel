@@ -3,8 +3,8 @@ FROM alpine:3.15 as builder
 ARG TARGETARCH
 
 LABEL version=1.0 \
-      arch=$TARGETARCH \
-      description="A production grade performance tuned redis docker image created by Opstree Solutions"
+    arch=$TARGETARCH \
+    description="A production grade performance tuned redis docker image created by Opstree Solutions"
 
 ARG REDIS_DOWNLOAD_URL="http://download.redis.io/"
 
@@ -16,8 +16,14 @@ WORKDIR /tmp
 
 RUN curl -L https://github.com/redis/redis/archive/refs/tags/6.2.14.tar.gz -o redis-${REDIS_VERSION}.tar.gz && \
     tar xvzf redis-${REDIS_VERSION}.tar.gz && \
-    make -C redis-${REDIS_SENTINEL_VERSION} && \
-    make -C redis-${REDIS_SENTINEL_VERSION} install BUILD_TLS=yes
+    arch="$(uname -m)"; \
+    extraJemallocConfigureFlags="--with-lg-page=16"; \
+    if [ "$arch" = "aarch64" ] || [ "$arch" = "arm64" ]; then \
+    sed -ri 's!cd jemalloc && ./configure !&'"$extraJemallocConfigureFlags"' !' /tmp/redis-${REDIS_SENTINEL_VERSION}/deps/Makefile; \
+    fi; \
+    export BUILD_TLS=yes; \
+    make -C redis-${REDIS_SENTINEL_VERSION} all; \
+    make -C redis-${REDIS_SENTINEL_VERSION} install
 
 FROM alpine:3.15
 
@@ -26,8 +32,8 @@ ARG TARGETARCH
 ENV SENTINEL_PORT=26379
 
 LABEL version=1.0 \
-      arch=$TARGETARCH \
-      description="A production grade performance tuned redis docker image created by Opstree Solutions"
+    arch=$TARGETARCH \
+    description="A production grade performance tuned redis docker image created by Opstree Solutions"
 
 
 COPY --from=builder /usr/local/bin/redis-cli /usr/local/bin/redis-cli

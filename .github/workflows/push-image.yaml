@@ -19,12 +19,12 @@ jobs:
         uses: docker/setup-buildx-action@v2
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
-      - name: Login to Quay
+      - name: Login to DOCKER
         uses: docker/login-action@v2
         with:
-          registry: quay.io
-          username: ${{ secrets.QUAY_USERNAME }}
-          password: ${{ secrets.QUAY_PASSWORD }}
+          registry: docker.io
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
       - name: Build and push multi-arch latest image
         uses: docker/build-push-action@v2
         with:
@@ -32,7 +32,7 @@ jobs:
           file: Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: quay.io/opstree/redis:${{ env.REDIS_VERSION }}
+          tags: liupeng0518/redis:${{ env.REDIS_VERSION }}
 
   build_redis_sentinel:
     runs-on: ubuntu-latest
@@ -43,12 +43,12 @@ jobs:
         uses: docker/setup-buildx-action@v2
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
-      - name: Login to Quay
+      - name: Login to DOCKER
         uses: docker/login-action@v2
         with:
-          registry: quay.io
-          username: ${{ secrets.QUAY_USERNAME }}
-          password: ${{ secrets.QUAY_PASSWORD }}
+          registry: docker.io
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
       - name: Build and push multi-arch latest image
         uses: docker/build-push-action@v2
         with:
@@ -56,7 +56,7 @@ jobs:
           file: Dockerfile.sentinel
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: quay.io/opstree/redis-sentinel:${{ env.REDIS_SENTINEL_VERSION }}
+          tags: liupeng0518/redis-sentinel:${{ env.REDIS_SENTINEL_VERSION }}
 
   build_redis_exporter:
     runs-on: ubuntu-latest
@@ -67,12 +67,12 @@ jobs:
         uses: docker/setup-buildx-action@v2
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
-      - name: Login to Quay
+      - name: Login to DOCKER
         uses: docker/login-action@v2
         with:
-          registry: quay.io
-          username: ${{ secrets.QUAY_USERNAME }}
-          password: ${{ secrets.QUAY_PASSWORD }}
+          registry: docker.io
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
       - name: Build and push multi-arch latest image
         uses: docker/build-push-action@v2
         with:
@@ -80,4 +80,4 @@ jobs:
           file: Dockerfile.exporter
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: quay.io/opstree/redis-exporter:${{ env.REDIS_EXPORTER_VERSION }}
+          tags: liupeng0518/redis-exporter:${{ env.REDIS_EXPORTER_VERSION }}
